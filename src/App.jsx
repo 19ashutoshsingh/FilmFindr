@@ -25,6 +25,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
 
@@ -79,6 +80,9 @@ const App = () => {
     fetchMovies(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
 
+  useEffect(()=>{
+    loadTrendingMovies();
+  }, []);
 
   // Handle Scroll Button Visibility
   useEffect(() => {
@@ -108,7 +112,19 @@ const App = () => {
           </h1>
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
         </header>
-        
+        {trendingMovies.length > 0 && (
+          <section className='trending'>
+            <h2>Trending Movies</h2>
+            <ul>
+              {trendingMovies.map((movie, index)=>(
+                <li key={movie.$id}>
+                  <p>{index+1}</p>
+                  <img src={movie.poster_url} alt={movie.title} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <section className='all-movies'>
           <h2>All Movies</h2>
 
