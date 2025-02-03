@@ -20,6 +20,10 @@ const MovieCard = ({ movie: { id, title, vote_average, poster_path, release_date
           <span>•</span>
           <p className="year">{release_date ? release_date.split('-')[0] : 'N/A'}</p>
           
+          {/* View More Button */}
+          <Link to={`/movie/${id}`} className="bg-blue-500 text-white px-3 py-1 mx-2 rounded-md text-sm hover:bg-blue-600 transition-all duration-400 ease">
+            View More
+          </Link>
         </div>
       </div>
     </div>
