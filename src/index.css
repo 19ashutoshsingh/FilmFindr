@@ -64,7 +64,7 @@
   }
 
   .trending {
-    @apply mt-20;
+    @apply mt-10;
 
     & ul {
       @apply flex flex-row overflow-y-auto gap-7 -mt-10 w-full hide-scrollbar;
