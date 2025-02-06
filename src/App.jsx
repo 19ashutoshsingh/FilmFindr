@@ -5,6 +5,7 @@ import MovieCard from './components/MovieCard';
 import { useDebounce } from 'react-use';
 import { getTrendingMovies, updateSearchCount } from './appwrite.js';
 import MovieCardSkeleton from './components/MovieCardSkeleton';
+import { Link } from 'react-router-dom';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TDMB_API_KEY;
@@ -111,6 +112,9 @@ const App = () => {
   return (
     <main>
       <div className='pattern' />
+      <Link to="/">
+        <img src="./film_logo1.png" alt="Film Logo" className="w-24 h-12 absolute m-8" />
+      </Link>
       <div className='wrapper'>
         <header>
           <img src='./hero.png' alt='Hero Banner' />

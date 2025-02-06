@@ -11,39 +11,48 @@ const client = new Client()
 const database = new Databases(client);
 
 export const updateSearchCount = async (searchTerm, movie) => {
-    // 1. use appwrite sdk to check if the search term exists in the database
     try {
-        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.equal('searchTerm', searchTerm),])
+        // Check if the movie already exists in the database
+        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+            Query.equal('movie_id', movie.id), // ✅ Check by movie ID instead of search term
+        ]);
 
-        // 2. if it does, update the count
-        if(result.documents.length > 0){
+        if (result.documents.length > 0) {
             const doc = result.documents[0];
             await database.updateDocument(DATABASE_ID, COLLECTION_ID, doc.$id, {
                 count: doc.count + 1,
-            })
-        }
-        //  3. if it doesn't, create a new document with the search term and count as 1
-        else{
+            });
+        } else {
+            // Create a new record only if the movie does not exist
             await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
                 searchTerm,
                 count: 1,
                 movie_id: movie.id,
                 poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            })
+            });
         }
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
-}
+};
 
 export const getTrendingMovies = async () => {
-    try{
+    try {
         const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
-            Query.limit(5),
             Query.orderDesc('count')
-        ])
-        return result.documents;
-    } catch(error){
-        
+        ]);
+
+        // Use a Map to ensure unique movies based on movie_id
+        const uniqueMovies = new Map();
+        result.documents.forEach((movie) => {
+            if (!uniqueMovies.has(movie.movie_id)) {
+                uniqueMovies.set(movie.movie_id, movie);
+            }
+        });
+
+        return Array.from(uniqueMovies.values()).slice(0, 8); // Ensuring top 5 unique trending movies
+    } catch (error) {
+        console.error("Error fetching trending movies:", error);
+        return [];
     }
-}
+};

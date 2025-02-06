@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Clapperboard, Ghost, Sword, Brush, Smile, Rocket, Monitor, Music, BookOpen, Target, Landmark, Mic, Users, Brain, Heart } from 'lucide-react';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -73,7 +73,11 @@ const MovieDetails = () => {
   if (!movie) return <p className="text-center text-gray-500 mt-4">Loading...</p>;
 
   return (
-    <div className="max-w-5xl mx-auto my-5 py-8 px-10 bg-gray-900 text-gray-300 rounded-xl shadow-2xl transition-all">
+    <div className='pattern'>
+      <Link to="/">
+        <img src="../film_logo1.png" alt="Film Logo" className="w-24 h-12 absolute m-8" />
+      </Link>
+    <div className="max-w-5xl mx-auto my-15 py-8 px-10 text-gray-300 rounded-xl shadow-2xl transition-all">
       <div className="grid md:grid-cols-2 gap-8 items-center">
         {/* Movie Poster */}
         <img 
@@ -141,6 +145,7 @@ const MovieDetails = () => {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 };
