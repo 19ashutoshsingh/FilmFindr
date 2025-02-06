@@ -268,26 +268,45 @@ const MovieDetails = () => {
         </div>
 
         {/* Trailer Section */}
-        <div className="mt-15 text-center">
-          <h2 className="text-3xl font-semibold mb-4">Watch Trailer</h2>
-          {trailer.includes("youtube.com/embed/") ? (
-            <div className="relative overflow-hidden rounded-lg shadow-2xl" style={{ paddingBottom: '56.25%', height: 0 }}>
-              <iframe 
-                className="absolute top-0 left-0 w-full h-full rounded-lg"
-                src={trailer} 
-                title="Movie Trailer" 
-                frameBorder="0"
-                allowFullScreen 
-              ></iframe>
-            </div>
-          ) : (
-            <p className="mt-4 text-lg">
-              Trailer not available. Search it on YouTube: 
-              <a href={trailer} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-                Click here
-              </a>
-            </p>
-          )}
+<div className="mt-15 text-center">
+  <h2 className="text-3xl font-semibold mb-4">Watch Trailer</h2>
+  {trailer.includes("youtube.com/embed/") ? (
+    <>
+      <div className="relative overflow-hidden rounded-lg shadow-2xl" style={{ paddingBottom: '56.25%', height: 0 }}>
+        <iframe 
+          className="absolute top-0 left-0 w-full h-full rounded-lg"
+          src={trailer} 
+          title="Movie Trailer" 
+          frameBorder="0"
+          allowFullScreen 
+        ></iframe>
+      </div>
+      <p className="mt-4 text-lg">
+        Or watch it on YouTube: 
+        <a 
+          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + " trailer")}`} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-400 hover:underline"
+        >
+          Click here
+        </a>
+      </p>
+    </>
+  ) : (
+    <p className="mt-4 text-lg">
+      Trailer not available. Search it on YouTube: 
+      <a 
+        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + " trailer")}`} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-blue-400 hover:underline"
+      >
+        Click here
+      </a>
+    </p>
+  )}
+
         </div>
       </div>
     </div>
