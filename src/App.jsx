@@ -26,20 +26,23 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false); // 🚀 New state to track search execution
+  const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageInput, setPageInput] = useState('');
 
   const allMoviesRef = useRef(null);
 
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 750, [searchTerm]);
 
-  const fetchMovies = async (query = '') => {
+  const fetchMovies = async (query = '', page = 1) => {
     setIsLoading(true);
     setErrorMessage('');
 
     try {
       const endpoint = query
-        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -49,21 +52,21 @@ const App = () => {
 
       const data = await response.json();
 
-      if (data.Response === 'False') {
-        setErrorMessage(data.Error || 'No movies found.');
+      if (data.results.length === 0) {
+        setErrorMessage('No movies found.');
         setMovieList([]);
         return;
       }
 
       setMovieList(data.results || []);
-
+      setTotalPages(data.total_pages);
+      
       if (query) {
-        setHasSearched(true); // ✅ Set to true only when a search is performed
+        setHasSearched(true);
         if (data.results.length > 0) {
           await updateSearchCount(query, data.results[0]);
         }
       }
-      
     } catch (error) {
       console.log(`Error fetching movies: ${error}`);
       setErrorMessage('Error fetching movies. Please try again later.');
@@ -72,26 +75,15 @@ const App = () => {
     }
   };
 
-  // 🚀 Scroll when movieList updates but ONLY if a search was executed
   useEffect(() => {
     if (hasSearched && movieList.length > 0 && allMoviesRef.current) {
-      console.log('Scrolling to All Movies section...');
       allMoviesRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [movieList, hasSearched]); // ✅ Added hasSearched as a dependency
-
-  const loadTrendingMovies = async () => {
-    try {
-      const movies = await getTrendingMovies();
-      setTrendingMovies(movies);
-    } catch (error) {
-      console.log(`Error fetching movies: ${error}`);
-    }
-  };
+  }, [movieList, hasSearched]);
 
   useEffect(() => {
-    fetchMovies(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
+    fetchMovies(debouncedSearchTerm, currentPage);
+  }, [debouncedSearchTerm, currentPage]);
 
   useEffect(() => {
     loadTrendingMovies();
@@ -105,8 +97,35 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  useEffect(() => {
+    // Sync pageInput with currentPage when it changes
+    setPageInput(currentPage);
+  }, [currentPage]);
+
+  const loadTrendingMovies = async () => {
+    try {
+      const movies = await getTrendingMovies();
+      setTrendingMovies(movies);
+    } catch (error) {
+      console.log(`Error fetching movies: ${error}`);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handlePageInput = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const goToPage = () => {
+    const pageNumber = parseInt(pageInput, 10);
+    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   return (
@@ -138,35 +157,55 @@ const App = () => {
           </section>
         )}
 
-        {/* All Movies Section with Scroll Ref */}
         <section ref={allMoviesRef} className='all-movies'>
           <h2>All Movies</h2>
           {isLoading ? (
-            <div className="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <MovieCardSkeleton key={index} />
-              ))}
-            </div>
+            <MovieCardSkeleton />
           ) : errorMessage ? (
             <p className='text-red-500'>{errorMessage}</p>
           ) : (
-            <ul>
-              {movieList.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
-              ))}
-            </ul>
+            <>
+              <ul>
+                {movieList.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} />
+                ))}
+              </ul>
+              <div className="pagination flex justify-center items-center gap-4 mt-6">
+                <button 
+                  onClick={() => handlePageChange(currentPage - 1)} 
+                  disabled={currentPage === 1} 
+                  className='px-4 py-2 bg-gray-800 text-white rounded disabled:opacity-50 cursor-pointer'
+                >
+                  Prev
+                </button>
+
+                <input 
+                  type="number" 
+                  value={pageInput} 
+                  onChange={handlePageInput} 
+                  placeholder={`Page ${currentPage}`} 
+                  className='text-white border border-gray-500 rounded px-2 py-1 w-20 text-center appearance-none page-input' style={{ MozAppearance: 'textfield' }} 
+                />
+
+                <button 
+                  onClick={goToPage} 
+                  className='px-4 py-2 bg-gray-800 text-white rounded disabled:opacity-50 cursor-pointer'
+                >
+                  Go
+                </button>
+
+                <button 
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  disabled={currentPage === totalPages} 
+                  className='px-4 py-2 bg-gray-800 text-white rounded disabled:opacity-50 cursor-pointer'
+                >
+                  Next
+                </button>
+              </div>
+            </>
           )}
         </section>
       </div>
-
-      {showScrollButton && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700 transition-all z-10 cursor-pointer text-xl"
-        >
-          ☝
-        </button>
-      )}
     </main>
   );
 };
