@@ -182,3 +182,22 @@
 .page-input {
   -moz-appearance: textfield; /* Remove spinner for Firefox */
 }
+
+/* Apply to the scrollable container */
+.scrollbar-custom::-webkit-scrollbar {
+  height: 10px; /* Adjust thickness */
+  background: transparent; /* Transparent track */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.6); /* Dark gray thumb */
+  border-radius: 10px; /* Rounded edges */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.8); /* Slightly lighter on hover */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent; /* Keep track fully transparent */
+}

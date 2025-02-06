@@ -35,32 +35,75 @@ const App = () => {
 
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 750, [searchTerm]);
 
+  // const fetchMovies = async (query = '', page = 1) => {
+  //   setIsLoading(true);
+  //   setErrorMessage('');
+
+  //   try {
+  //     const endpoint = query
+  //       ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`
+  //       : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
+
+  //     const response = await fetch(endpoint, API_OPTIONS);
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch movies');
+  //     }
+
+  //     const data = await response.json();
+
+  //     if (data.results.length === 0) {
+  //       setErrorMessage('No movies found.');
+  //       setMovieList([]);
+  //       return;
+  //     }
+
+  //     setMovieList(data.results || []);
+  //     setTotalPages(data.total_pages);
+      
+  //     if (query) {
+  //       setHasSearched(true);
+  //       if (data.results.length > 0) {
+  //         await updateSearchCount(query, data.results[0]);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(`Error fetching movies: ${error}`);
+  //     setErrorMessage('Error fetching movies. Please try again later.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const fetchMovies = async (query = '', page = 1) => {
     setIsLoading(true);
     setErrorMessage('');
-
+  
     try {
       const endpoint = query
         ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`
         : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
-
+  
       const response = await fetch(endpoint, API_OPTIONS);
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch movies');
       }
-
+  
       const data = await response.json();
-
+  
       if (data.results.length === 0) {
         setErrorMessage('No movies found.');
         setMovieList([]);
         return;
       }
-
+  
       setMovieList(data.results || []);
-      setTotalPages(data.total_pages);
       
+      // Cap totalPages at 500 if using discover/movie
+      const maxPages = query ? data.total_pages : Math.min(data.total_pages, 500);
+      setTotalPages(maxPages);
+  
       if (query) {
         setHasSearched(true);
         if (data.results.length > 0) {
@@ -74,6 +117,7 @@ const App = () => {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (hasSearched && movieList.length > 0 && allMoviesRef.current) {
@@ -132,7 +176,7 @@ const App = () => {
     <main>
       <div className='pattern' />
       <Link to="/">
-        <img src="./film_logo1.png" alt="Film Logo" className="w-24 h-12 absolute m-8" />
+        <img src="./film_logo1.png" alt="Film Logo" className="w-30 h-12 absolute m-8" />
       </Link>
       <div className='wrapper'>
         <header>
