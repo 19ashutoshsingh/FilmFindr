@@ -35,46 +35,6 @@ const App = () => {
 
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 750, [searchTerm]);
 
-  // const fetchMovies = async (query = '', page = 1) => {
-  //   setIsLoading(true);
-  //   setErrorMessage('');
-
-  //   try {
-  //     const endpoint = query
-  //       ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`
-  //       : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
-
-  //     const response = await fetch(endpoint, API_OPTIONS);
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch movies');
-  //     }
-
-  //     const data = await response.json();
-
-  //     if (data.results.length === 0) {
-  //       setErrorMessage('No movies found.');
-  //       setMovieList([]);
-  //       return;
-  //     }
-
-  //     setMovieList(data.results || []);
-  //     setTotalPages(data.total_pages);
-      
-  //     if (query) {
-  //       setHasSearched(true);
-  //       if (data.results.length > 0) {
-  //         await updateSearchCount(query, data.results[0]);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error fetching movies: ${error}`);
-  //     setErrorMessage('Error fetching movies. Please try again later.');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const fetchMovies = async (query = '', page = 1) => {
     setIsLoading(true);
     setErrorMessage('');
