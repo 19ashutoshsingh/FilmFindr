@@ -90,7 +90,7 @@ const ActorMovies = () => {
           <p className="text-red-500">{errorMessage}</p>
         ) : actorDetails ? (
           <div className="max-w-5xl mx-auto py-8 text-gray-300 rounded-xl shadow-2xl transition-all">
-            <div className="grid md:grid-cols-[1fr_2fr] gap-2 items-center">
+            <div className="grid md:grid-cols-[1fr_2fr] gap-10 items-center">
               {/* Actor Image */}
               <img
                 src={actorDetails.profile_path ? `https://image.tmdb.org/t/p/w300/${actorDetails.profile_path}` : '/no-profile.png'}
