@@ -59,7 +59,7 @@ const Search = ({ searchTerm, setSearchTerm }) => {
           value={interimText || searchTerm} // Show live text first
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button onClick={handleVoiceSearch} className="voice-search">
+        <button onClick={handleVoiceSearch} className="voice-search cursor-pointer">
           <Mic className={`w-6 h-6 ${isListening ? 'text-red-500' : 'text-gray-400'}`} />
         </button>
       </div>
