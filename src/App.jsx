@@ -6,6 +6,8 @@ import { useDebounce } from 'react-use';
 import { getTrendingMovies, updateSearchCount } from './appwrite.js';
 import MovieCardSkeleton from './components/MovieCardSkeleton';
 import { Link } from 'react-router-dom';
+import ChatButton from './components/ChatButton';
+
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TDMB_API_KEY;
@@ -133,6 +135,9 @@ const App = () => {
   };
 
   return (
+    <>
+    <ChatButton />
+    
     <main>
       <div className='pattern' />
       <Link to="/">
@@ -211,6 +216,7 @@ const App = () => {
         </section>
       </div>
     </main>
+    </>
   );
 };
 

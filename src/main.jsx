@@ -5,6 +5,7 @@ import App from './App';
 import MovieDetails from './components/MovieDetails';
 import './index.css'
 import ActorMovies from './components/ActorMovies';
+import GenrePage from './pages/GenrePage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -12,6 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/" element={<App />} />
       <Route path="/movie/:id" element={<MovieDetails />} />
       <Route path="/actor/:actorId" element={<ActorMovies />} />
+      <Route path="/genre/:genreId" element={<GenrePage />} />
     </Routes>
   </BrowserRouter>
 );

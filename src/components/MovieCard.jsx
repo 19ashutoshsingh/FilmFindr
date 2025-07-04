@@ -12,8 +12,8 @@ const MovieCard = ({ movie: { id, title, vote_average, poster_path, release_date
         <h3>{title}</h3>
         <div className="content">
           <div className="rating">
-            <img src="star.svg" alt="Star Icon" />
-            <p>{vote_average ? vote_average.toFixed(1) : 'N/A'}</p>
+            {/* <img src="star.svg" alt="Star Icon" /> */}
+            ⭐<p>{vote_average ? vote_average.toFixed(1) : 'N/A'}</p>
           </div>
           <span>•</span>
           <p className="lang">{original_language}</p>
@@ -21,8 +21,8 @@ const MovieCard = ({ movie: { id, title, vote_average, poster_path, release_date
           <p className="year">{release_date ? release_date.split('-')[0] : 'N/A'}</p>
           
           {/* View More Button */}
-          <Link to={`/movie/${id}`} className="bg-blue-500 text-white px-3 py-1 mx-2 rounded-md text-sm hover:bg-blue-600 transition-all duration-400 ease min-w-fit">
-            View More
+          <Link to={`/movie/${id}`} className="bg-blue-500 text-white px-4 py-1 mx-2 rounded-md text-sm hover:bg-blue-600 transition-all duration-400 ease min-w-fit">
+            View
           </Link>
         </div>
       </div>

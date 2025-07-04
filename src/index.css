@@ -128,16 +128,16 @@
       @apply flex flex-row items-center gap-1;
     }
 
-    & .rating img {
+    /* & .rating img {
       @apply size-4 object-contain;
-    }
+    } */
 
     & .rating p {
       @apply font-bold text-base text-white;
     }
 
     & .content span {
-      @apply text-sm text-gray-100;
+      @apply text-sm text-gray-100 mr-1;
     }
 
     & .content .lang {
